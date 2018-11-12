@@ -1,0 +1,10 @@
+下载：
+https://code.visualstudio.com/
+
+教程：
+1.
+http://blog.csdn.net/crper/article/list?q=vs%20code
+
+视频教程
+2.
+http://study.163.com/course/introduction/1004909008.htm

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .stage {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            background: #4a96ee;
+            overflow: hidden;
+        }
+
+        .sheep {
+            position: absolute;
+            width: 164px;
+            height: 122px;
+            background-image: url('sheep.png');
+            background-position: 0 0;
+            background-repeat: no-repeat;
+            right: -164px;
+            bottom: 0;
+            cursor: -webkit-grabbing;
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="stage">
+        <!-- <div class="sheep"></div> -->
+    </div>
+    <script>
+        // var num = 0;//计数用的
+        // var cot = 0; //偏移量 移动
+        // var speed = 10;
+        // var sheep = document.getElementsByClassName('sheep')[0];
+        // var sheepAnimate = setInterval(function(){
+        //         num = num + 164;
+        //         if(num == 1312){
+        //             num = 0
+        //         }
+        //         sheep.style.backgroundPosition = -num + 'px '+ 0 + 'px';
+        // },100)
+
+        // var sheepRun = setInterval(function(){
+        //     cot = sheep.offsetLeft - speed;
+        //         if(cot<= -164){
+        //             clearInterval(sheepRun);
+        //             console.log('stop')
+        //         }
+        //     sheep.style.left = cot+'px';
+        // },100)
+
+
+        //小羊奔跑功能
+        (function () {
+
+            var obj = {
+                frequency: 70, // 频率协调
+                stage: document.getElementsByClassName('stage')[0],
+                num: 0,
+                cot: 0,
+                speed: 7,//移动速度
+                maxSheepNum: 8 //最大数量超过
+            }
+            //小羊工厂
+            function Sheep(data) {
+                this.sheep = document.createElement('div');
+                data.stage.appendChild(this.sheep);
+                this.stage = data.stage;
+                this.sheep.className = 'sheep';
+                this.frequencyNum = Math.floor(Math.random() * data.frequency) + 30;
+                this.sheepWith = this.sheep.offsetWidth;
+                this.sheepLeft = this.sheep.offsetLeft;
+                this.cot = data.cot;
+                this.num = data.cot;
+                this.speed = data.speed;
+                this.top = 0;
+            }
+
+            init()
+            function init() {
+                creatSheep();
+            }
+
+            function creatSheep() {
+                //每隔2000毫秒 执行造羊
+                var timer = setInterval(function () {
+                    var sheepNum = obj.stage.children.length;
+                    console.log(sheepNum);
+                    if (sheepNum > obj.maxSheepNum - 1) {
+                        return false;
+                    } else {
+                        var newSheep = new Sheep(obj);
+                        sheepRun(newSheep);//跑起来
+                    }
+
+
+                }, 1000)
+
+            }
+
+            //羊的动画 
+            function sheepRun(newS) {
+
+
+                var sheepAnimate = setInterval(function () {
+                    newS.num = newS.num + newS.sheepWith;
+                    if (newS.num == newS.sheepWith * 8) {
+                        newS.num = 0
+                    }
+                    newS.sheep.style.backgroundPosition = -newS.num + 'px ' + newS.top + 'px';
+                }, newS.frequencyNum)
+
+                var sheepRuning = setInterval(function () {
+                    newS.cot = newS.sheep.offsetLeft - newS.speed;
+                    if (newS.cot <= -newS.sheepWith) {
+                        clearInterval(sheepRuning);
+                        clearInterval(sheepAnimate);
+                        newS.stage.removeChild(newS.sheep);
+
+                        console.log('remove')
+                    }
+                    newS.sheep.style.left = newS.cot + 'px';
+                }, newS.frequencyNum)
+
+
+
+                //小羊的拖拽
+
+                newS.sheep.addEventListener('mousedown', function (e) {
+                    var event = e || event;
+                    newS.top = -128;
+                    newS.speed = 0;
+                    newS.x = event.pageX;
+                    newS.y = event.pageY;
+
+                    document.addEventListener('mousemove', mouseM)
+                    function mouseM(e) {
+                        var event = e || event;
+                        newS.sheep.style.left = newS.sheep.offsetLeft + (event.pageX - newS.x) + 'px';
+                        newS.sheep.style.top = newS.sheep.offsetTop + (event.pageY - newS.y) + 'px';
+                        newS.x = event.pageX;
+                        newS.y = event.pageY;
+                    }
+
+                    newS.sheep.addEventListener('mouseup', function (e) {
+                        var event = e || event;
+                        newS.top = 0;
+                        newS.speed = obj.speed;
+                        document.removeEventListener('mousemove', mouseM);
+                    })
+
+
+
+                })
+
+
+
+
+
+
+
+
+
+
+
+
+            }
+
+
+
+
+
+
+
+        })()
+
+
+
+    </script>
+</body>
+
+</html>
